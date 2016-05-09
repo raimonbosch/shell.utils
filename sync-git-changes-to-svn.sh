@@ -31,6 +31,7 @@ git diff --name-status $GIT_SHA HEAD | grep -P 'M\t' | perl -pe 's/M\t//g' | sor
 for file in $(cat $DELETED_FILES)
 do
     echo "rm  $DEMIURGE_SVN_PATH$file"
+    svn rm $DEMIURGE_SVN_PATH$file
     rm  $DEMIURGE_SVN_PATH$file
 done
 
@@ -41,8 +42,16 @@ do
     mkdir -p $DEMIURGE_SVN_PATH$file
 done
 
-#Upload new and modified files
-for file in $(cat $ADDED_FILES $MODIFIED_FILES)
+#Add new files
+for file in $(cat $ADDED_FILES)
+do
+    echo "cp $DEMIURGE_GIT_PATH$file $DEMIURGE_SVN_PATH$file"
+    cp $DEMIURGE_GIT_PATH$file $DEMIURGE_SVN_PATH$file
+    svn add $DEMIURGE_SVN_PATH$file
+done
+
+#Add modified files
+for file in $(cat $MODIFIED_FILES)
 do
     echo "cp $DEMIURGE_GIT_PATH$file $DEMIURGE_SVN_PATH$file"
     cp $DEMIURGE_GIT_PATH$file $DEMIURGE_SVN_PATH$file
